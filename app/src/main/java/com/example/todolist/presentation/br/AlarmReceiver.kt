@@ -18,22 +18,31 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class AlarmReceiver : BroadcastReceiver() {
     private var notificationManager: NotificationManagerCompat? = null
+
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
     override fun onReceive(p0: Context?, p1: Intent?) {
         val taskInfo = p1?.getSerializableExtra("task_info") as? TaskInfo
-        if(sharedPreferences.getBoolean(taskInfo?.priority.toString(), true)){
+        if (sharedPreferences.getBoolean(taskInfo?.priority.toString(), true)) {
             val tapResultIntent = Intent(p0, MainActivity::class.java)
             tapResultIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-            val pendingIntent: PendingIntent = getActivity( p0,0,tapResultIntent,FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE)
-
+            val pendingIntent: PendingIntent =
+                getActivity(p0, 0, tapResultIntent, FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE)
             val intent1 = Intent(p0, OnCompletedBroadcastReceiver::class.java).apply {
                 putExtra("task_info", taskInfo)
             }
             val pendingIntent1: PendingIntent? =
-                taskInfo?.let { getBroadcast(p0, it.id,intent1,FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE) }
-            val action1 : NotificationCompat.Action = NotificationCompat.Action.Builder(0,"Completed",pendingIntent1).build()
+                taskInfo?.let {
+                    getBroadcast(
+                        p0,
+                        it.id,
+                        intent1,
+                        FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
+                    )
+                }
+            val action1: NotificationCompat.Action =
+                NotificationCompat.Action.Builder(0, "Completed", pendingIntent1).build()
 
             val notification = p0?.let {
                 NotificationCompat.Builder(it, "to_do_list")

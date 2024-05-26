@@ -1,11 +1,11 @@
 package com.example.todolist.presentation.br
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.core.content.ContextCompat.getSystemService
 import com.example.todolist.data.model.TaskInfo
 import com.example.todolist.data.repository.TaskCategoryRepositoryImpl
 import com.example.todolist.presentation.MainActivity
@@ -20,6 +20,7 @@ import javax.inject.Inject
 class RebootBroadcastReceiver : BroadcastReceiver(){
     @Inject
     lateinit var repository: TaskCategoryRepositoryImpl
+    @SuppressLint("UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context?, p1: Intent?) {
         val time = Date()
         CoroutineScope(Main).launch {
@@ -28,6 +29,7 @@ class RebootBroadcastReceiver : BroadcastReceiver(){
         }
     }
 
+    @SuppressLint("ScheduleExactAlarm")
     private fun setAlarm(taskInfo: TaskInfo, context: Context?){
         val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, AlarmReceiver::class.java)
