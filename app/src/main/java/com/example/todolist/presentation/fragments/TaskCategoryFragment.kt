@@ -5,18 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.todolist.R
+import com.example.todolist.data.model.TaskCategoryInfo
+import com.example.todolist.databinding.FragmentTaskCategoryBinding
 import com.example.todolist.presentation.MainActivity
 import com.example.todolist.presentation.MainActivityViewModel
-import com.example.todolist.R
 import com.example.todolist.presentation.adapter.TasksAdapter
-import com.example.todolist.databinding.FragmentTaskCategoryBinding
-import com.example.todolist.data.model.TaskCategoryInfo
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -28,6 +27,7 @@ class TaskCategoryFragment : ParentFragment() {
     private lateinit var binding: FragmentTaskCategoryBinding
     private val args: TaskCategoryFragmentArgs by navArgs()
     private lateinit var category: String
+
     @Inject
     @Named("task_category_fragment")
     lateinit var adapter: TasksAdapter
@@ -44,7 +44,8 @@ class TaskCategoryFragment : ParentFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = (activity as MainActivity).viewModel
-        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        adapter.stateRestorationPolicy =
+            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         adapter.setOnItemClickListener {
             editTaskInformation(it)
         }
@@ -56,11 +57,11 @@ class TaskCategoryFragment : ParentFragment() {
         binding.apply {
             text.text = category
         }
-        viewModel.getUncompletedTaskOfCategory(category).observe(viewLifecycleOwner, Observer {
-            if(it.isEmpty()) binding.noResultAnimationView.visibility = View.VISIBLE
+        viewModel.getUncompletedTaskOfCategory(category).observe(viewLifecycleOwner) {
+            if (it.isEmpty()) binding.noResultAnimationView.visibility = View.VISIBLE
             else binding.noResultAnimationView.visibility = View.GONE
             adapter.differ.submitList(it)
-        })
+        }
     }
 
     private fun initRecyclerView() {
@@ -72,7 +73,8 @@ class TaskCategoryFragment : ParentFragment() {
 
     private fun editTaskInformation(taskCategoryInfo: TaskCategoryInfo) {
         val action = TaskCategoryFragmentDirections.actionTaskCategoryFragmentToNewTaskFragment(
-            taskCategoryInfo
+            newTaskArg = taskCategoryInfo,
+            calendarArg = null
         )
         findNavController().navigate(action)
     }
@@ -96,9 +98,13 @@ class TaskCategoryFragment : ParentFragment() {
             val categoryInfo = adapter.differ.currentList[position]?.categoryInfo?.get(0)
             if (taskInfo != null && categoryInfo != null) {
                 deleteTask(viewModel, taskInfo, categoryInfo)
-                Snackbar.make(binding.root, "Deleted Successfully", Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.task_deleted_message),
+                    Snackbar.LENGTH_LONG
+                )
                     .apply {
-                        setAction("Undo") {
+                        setAction(getString(R.string.take_back_message)) {
                             viewModel.insertTaskAndCategory(taskInfo, categoryInfo)
                         }
                         show()

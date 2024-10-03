@@ -1,5 +1,6 @@
 package com.example.todolist.presentation.fragments
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
@@ -42,16 +43,23 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class NewTaskFragment : Fragment() {
-    private lateinit var binding : FragmentNewTaskBinding
+    private lateinit var binding: FragmentNewTaskBinding
     private lateinit var navController: NavController
-    private val args : NewTaskFragmentArgs by navArgs()
-    private var taskInfo = TaskInfo(0,"", Date(Constants.MAX_TIMESTAMP), 0, false,"" )
-    private var categoryInfo = CategoryInfo("","#000000")
+    private val args: NewTaskFragmentArgs by navArgs()
+    private var taskInfo = TaskInfo(
+        id = 0,
+        description = "",
+        date = Date(Constants.MAX_TIMESTAMP),
+        priority = 0,
+        status = false,
+        category = ""
+    )
+    private var categoryInfo = CategoryInfo("", "#000000")
     private lateinit var viewModel: MainActivityViewModel
     private var colorString = "#000000"
-    private lateinit var prevTaskCategory : TaskCategoryInfo
+    private lateinit var prevTaskCategory: TaskCategoryInfo
     private var isCategorySelected = false
-    private lateinit var colorView : View
+    private lateinit var colorView: View
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,18 +74,26 @@ class NewTaskFragment : Fragment() {
         viewModel = (activity as MainActivity).viewModel
         navController = findNavController()
         createNotification()
-        if(args.newTaskArg != null) initUpdate()
+        if (args.newTaskArg != null) initUpdate()
+        args.calendarArg?.let { taskInfo.date = it }
         setInitialValues()
         loadAllCategories()
     }
 
-    private fun initUpdate(){
+    private fun initUpdate() {
         taskInfo = args.newTaskArg!!.taskInfo
         categoryInfo = args.newTaskArg!!.categoryInfo[0]
-        binding.fab.text = "Update"
+        binding.fab.text = getString(R.string.task_update)
         colorString = categoryInfo.color
         prevTaskCategory = TaskCategoryInfo(
-            TaskInfo(taskInfo.id, taskInfo.description, taskInfo.date, taskInfo.priority, taskInfo.status, taskInfo.category),
+            TaskInfo(
+                taskInfo.id,
+                taskInfo.description,
+                taskInfo.date,
+                taskInfo.priority,
+                taskInfo.status,
+                taskInfo.category
+            ),
             listOf(CategoryInfo(categoryInfo.categoryInformation, categoryInfo.color))
         )
         isCategorySelected = true
@@ -85,7 +101,7 @@ class NewTaskFragment : Fragment() {
 
     private fun setInitialValues() {
         var str = DateToString.convertDateToString(taskInfo.date)
-        if(str=="N/A")str="Due Date"
+        if (str == "N/A") str = getString(R.string.due_date)
 
         binding.apply {
             editText.setText(taskInfo.description)
@@ -99,13 +115,13 @@ class NewTaskFragment : Fragment() {
             }
 
             //ClickListeners
-            dateAndTimePicker.setOnClickListener { showDateTimePicker()}
-            isCompleted.setOnCheckedChangeListener{_,it-> taskInfo.status = it }
-            fab.setOnClickListener{ addTask()}
-            priorityChipGroup.setOnCheckedStateChangeListener{chipGroup, i->
+            dateAndTimePicker.setOnClickListener { showDateTimePicker() }
+            isCompleted.setOnCheckedChangeListener { _, it -> taskInfo.status = it }
+            fab.setOnClickListener { addTask() }
+            priorityChipGroup.setOnCheckedStateChangeListener { chipGroup, i ->
                 changePriority(chipGroup, i)
             }
-            categoryChipGroup.setOnCheckedStateChangeListener{chipGroup, i->
+            categoryChipGroup.setOnCheckedStateChangeListener { chipGroup, i ->
                 listenToCategoryClick(chipGroup, i)
             }
 
@@ -136,8 +152,8 @@ class NewTaskFragment : Fragment() {
         val chip = chipGroup.findViewById(id) as Chip
 
         when (chip.text) {
-            "Low" -> taskInfo.priority = 0
-            "Medium" -> taskInfo.priority = 1
+            getString(R.string.low) -> taskInfo.priority = 0
+            getString(R.string.medium) -> taskInfo.priority = 1
             else -> taskInfo.priority = 2
         }
     }
@@ -145,10 +161,10 @@ class NewTaskFragment : Fragment() {
     private fun listenToCategoryClick(chipGroup: ChipGroup, i: List<Int>) {
         val id = i[0]
         val chip = chipGroup.findViewById(id) as Chip
-        if(chip.text.toString() == "+ Add New Category"){
+        if (chip.text.toString() == getString(R.string.add_new_category)) {
             displayCategoryChooseDialog()
             isCategorySelected = false
-        }else {
+        } else {
             taskInfo.category = chip.text.toString()
             categoryInfo.categoryInformation = chip.text.toString()
             categoryInfo.color = chip.tag.toString()
@@ -159,7 +175,6 @@ class NewTaskFragment : Fragment() {
 
     private fun displayCategoryChooseDialog() {
         colorString = generateRandomColor()
-        Log.d("DATA", colorString)
         val dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.category_dialog)
         val editText = dialog.findViewById<TextInputEditText>(R.id.editText)
@@ -169,8 +184,13 @@ class NewTaskFragment : Fragment() {
         colorView.setBackgroundColor(Color.parseColor(colorString))
         addColor.setOnClickListener { displayColorPickerDialog() }
         addCategory.setOnClickListener {
-            if(editText.text.isNullOrBlank())
-                Snackbar.make(binding.root, "Please add category", Snackbar.LENGTH_SHORT).setAction("Action", null).show()
+            if (editText.text.isNullOrBlank())
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.task_add_category_message),
+                    Snackbar.LENGTH_SHORT
+                )
+                    .setAction("Action", null).show()
             else {
                 addNewCategoryChip(editText.text.toString())
             }
@@ -181,7 +201,7 @@ class NewTaskFragment : Fragment() {
         dialog.show();
     }
 
-    private fun generateRandomColor() : String{
+    private fun generateRandomColor(): String {
         val random = Random()
         val color = Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256))
         return "#" + Integer.toHexString(color)
@@ -190,16 +210,16 @@ class NewTaskFragment : Fragment() {
     private fun displayColorPickerDialog() {
         ColorPickerDialogBuilder
             .with(context)
-            .setTitle("Choose color")
+            .setTitle(getString(R.string.choose_color))
             .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
             .density(12)
             .setOnColorSelectedListener { selectedColor ->
                 colorString = "#" + Integer.toHexString(selectedColor)
             }
-            .setPositiveButton("Ok") { _, _, _ ->
+            .setPositiveButton(getString(R.string.ok_button)) { _, _, _ ->
                 colorView.setBackgroundColor(Color.parseColor(colorString))
             }
-            .setNegativeButton("Cancel") { _,_ ->
+            .setNegativeButton(getString(R.string.cancel_button)) { _, _ ->
                 colorString = "#000000"
             }
             .build()
@@ -208,7 +228,12 @@ class NewTaskFragment : Fragment() {
 
     private fun addNewCategoryChip(category: String) {
         val chip = Chip(context)
-        val drawable = ChipDrawable.createFromAttributes(requireContext(), null, 0, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice)
+        val drawable = ChipDrawable.createFromAttributes(
+            requireContext(),
+            null,
+            0,
+            com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice
+        )
         chip.apply {
             setChipDrawable(drawable)
             text = category
@@ -225,25 +250,35 @@ class NewTaskFragment : Fragment() {
 
     private fun addTask() {
         val date = Date()
-        Log.d("DATA", taskInfo.date.seconds.toString())
         taskInfo.description = binding.editText.text.toString()
-        if(taskInfo.description.isNullOrBlank())Snackbar.make(binding.root, "Please add description", Snackbar.LENGTH_SHORT).setAction("Action", null).show()
-        else if(taskInfo.category.isNullOrBlank() || categoryInfo.categoryInformation.isNullOrBlank() || !isCategorySelected)Snackbar.make(binding.root, "Please select a category", Snackbar.LENGTH_SHORT).setAction("Action", null).show()
+        if (taskInfo.description.isBlank()) Snackbar.make(
+            binding.root,
+            getString(R.string.task_add_desc_message),
+            Snackbar.LENGTH_SHORT
+        ).setAction("Action", null).show()
+        else if (taskInfo.category.isBlank() ||
+            categoryInfo.categoryInformation.isBlank() ||
+            !isCategorySelected
+        ) Snackbar.make(
+            binding.root,
+            getString(R.string.task_add_category_message),
+            Snackbar.LENGTH_SHORT
+        ).setAction("Action", null).show()
         else {
-            if(binding.fab.text.equals("Update")) {
+            if (binding.fab.text.equals(getString(R.string.task_update))) {
                 updateTask()
-            }else {
-                val diff = (Date().time/1000) - Constants.sDate
+            } else {
+                val diff = (Date().time / 1000) - Constants.sDate
                 taskInfo.id = diff.toInt()
                 viewModel.insertTaskAndCategory(taskInfo, categoryInfo)
-                if(!taskInfo.status && taskInfo.date>date && taskInfo.date.seconds == 5)
-                setAlarm(taskInfo)
+                if (!taskInfo.status && taskInfo.date > date && taskInfo.date.seconds == 5)
+                    setAlarm(taskInfo)
             }
             navController.popBackStack()
         }
     }
 
-    private fun updateTask(){
+    private fun updateTask() {
         val date = Date()
         if (taskInfo.category == prevTaskCategory.taskInfo.category)
             viewModel.updateTaskAndAddCategory(taskInfo, categoryInfo)
@@ -261,16 +296,21 @@ class NewTaskFragment : Fragment() {
             }
         }
 
-        if(!taskInfo.status && taskInfo.date>date && taskInfo.date.seconds == 5)
+        if (!taskInfo.status && taskInfo.date > date && taskInfo.date.seconds == 5)
             setAlarm(taskInfo)
         else removeAlarm(taskInfo)
     }
 
-    private fun removeAlarm(taskInfo: TaskInfo){
+    private fun removeAlarm(taskInfo: TaskInfo) {
         val alarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         intent.putExtra("task_info", taskInfo)
-        val pendingIntent = PendingIntent.getBroadcast(requireContext(), taskInfo.id, intent, PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireContext(),
+            taskInfo.id,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
         alarmManager.cancel(pendingIntent)
     }
 
@@ -288,7 +328,7 @@ class NewTaskFragment : Fragment() {
             timePicker.show(childFragmentManager, "TAG")
         }
 
-        timePicker.addOnPositiveButtonClickListener{
+        timePicker.addOnPositiveButtonClickListener {
             val cal = Calendar.getInstance()
             cal.time = taskInfo.date
             cal.set(Calendar.HOUR_OF_DAY, timePicker.hour)
@@ -297,27 +337,39 @@ class NewTaskFragment : Fragment() {
             taskInfo.date = cal.time
             binding.dateAndTimePicker.text = DateToString.convertDateToString(taskInfo.date)
         }
-        datePicker.show(childFragmentManager,"TAG")
+        datePicker.show(childFragmentManager, "TAG")
     }
 
+    @SuppressLint("ScheduleExactAlarm")
     private fun setAlarm(taskInfo: TaskInfo) {
         val alarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         intent.putExtra("task_info", taskInfo)
-        val pendingIntent = PendingIntent.getBroadcast(requireContext(), taskInfo.id, intent, PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireContext(),
+            taskInfo.id,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
         val mainActivityIntent = Intent(requireContext(), MainActivity::class.java)
-        val basicPendingIntent = PendingIntent.getActivity(requireContext(), taskInfo.id, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE)
+        val basicPendingIntent = PendingIntent.getActivity(
+            requireContext(),
+            taskInfo.id,
+            mainActivityIntent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
         val clockInfo = AlarmManager.AlarmClockInfo(taskInfo.date.time, basicPendingIntent)
         alarmManager.setAlarmClock(clockInfo, pendingIntent)
     }
 
     private fun createNotification() {
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel("to_do_list", "Tasks Notification Channel", importance).apply {
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channel =
+            NotificationChannel("to_do_list", "Tasks Notification Channel", importance).apply {
                 description = "Notification for Tasks"
             }
-            val notificationManager = activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+        val notificationManager =
+            activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
-
 }

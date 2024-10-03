@@ -99,7 +99,7 @@ interface TaskCategoryDao {
 
     @Query("SELECT * " +
             "FROM taskInfo")
-    fun getTasks(): LiveData<List<TaskInfo>>
+    fun getTasks(): LiveData<List<TaskCategoryInfo>>
 
     @Query("SELECT COUNT(*) " +
             "FROM taskInfo " +

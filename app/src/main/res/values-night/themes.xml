@@ -32,4 +32,14 @@
     <style name="ThemeOverlay.App.Card" parent="">
         <item name="colorPrimary">@color/black</item>
     </style>
+
+    <style name="Calendar">
+        <item name="monthTitleColor">@color/light_grey</item>
+        <item name="weekHeaderColor">@color/light_grey</item>
+        <item name="eventDotColor">@color/dark_blue</item>
+        <item name="selectionColor">@color/light_blue</item>
+        <item name="primaryTextColor">@color/white</item>
+        <item name="secondaryTextColor">@color/grey</item>
+        <item name="selectedTextColor">@color/black</item>
+    </style>
 </resources>

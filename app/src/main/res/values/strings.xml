@@ -10,10 +10,10 @@
     <string name="menu_home">Главная</string>
     <string name="menu_gallery">Галерея</string>
     <string name="menu_slideshow">Слайд-шоу</string>
-    <string name="add_category">Добавить категорию</string>
+    <string name="add_category">Добавить</string>
     <string name="enter_category">Введите категорию</string>
     <string name="category_color">Цвет категории</string>
-    <string name="add_color">Добавить цвет</string>
+    <string name="add_color">Цвет</string>
     <string name="categories">Категории</string>
     <string name="tasks_to_do">Открытые задачи</string>
     <string name="completed_tasks">Выполненные задачи</string>
@@ -36,4 +36,17 @@
     <string name="general">Общее</string>
     <string name="rate_the_app">Rate the app</string>
     <string name="dark_theme">Темная тема</string>
+    <string name="task_update">Обновить</string>
+    <string name="task_add_category_message">Добавьте категорию</string>
+    <string name="task_add_desc_message">Добавьте описание</string>
+    <string name="choose_color">Выберите цвет</string>
+    <string name="ok_button">Подтвердить</string>
+    <string name="cancel_button">Отмена</string>
+    <string name="new_category_title">Новая категория</string>
+    <string name="tasks_view">Вид задач</string>
+    <string name="calendar">Календарь</string>
+    <string name="task_deleted_message">Успешно удалено</string>
+    <string name="take_back_message">Вернуть</string>
+    <string name="json_to_email">Отправить задачи</string>
+    <string name="send_all_uncompleted_tasks">Отправить все незавершенные задачи</string>
 </resources>

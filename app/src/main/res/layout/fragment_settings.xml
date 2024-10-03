@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     app:thumbTint="@drawable/switch_thumb_selector"
-                    app:trackTint="@drawable/switch_track_selector"/>
+                    app:trackTint="@drawable/switch_track_selector" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -78,7 +78,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     app:thumbTint="@drawable/switch_thumb_selector"
-                    app:trackTint="@drawable/switch_track_selector"/>
+                    app:trackTint="@drawable/switch_track_selector" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -141,7 +141,5 @@
             </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
-
     </ScrollView>
-
 </layout>

@@ -46,6 +46,7 @@ class TaskCategoryRepositoryImpl @Inject constructor(private val taskCategoryDao
 
     override fun getUncompletedTask(): LiveData<List<TaskCategoryInfo>> = taskCategoryDao.getUncompletedTask()
     override fun getCompletedTask(): LiveData<List<TaskCategoryInfo>> = taskCategoryDao.getCompletedTask()
+    override fun getAllTask(): LiveData<List<TaskCategoryInfo>> = taskCategoryDao.getTasks()
     override fun getUncompletedTaskOfCategory(category: String): LiveData<List<TaskCategoryInfo>> = taskCategoryDao.getUncompletedTaskOfCategory(category)
     override fun getCompletedTaskOfCategory(category: String): LiveData<List<TaskCategoryInfo>> = taskCategoryDao.getCompletedTaskOfCategory(category)
     override fun getNoOfTaskForEachCategory(): LiveData<List<NoOfTaskForEachCategory>> = taskCategoryDao.getNoOfTaskForEachCategory()

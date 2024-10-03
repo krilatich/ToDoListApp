@@ -1,5 +1,6 @@
 package com.example.todolist.presentation.fragments
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -33,6 +34,7 @@ open class ParentFragment : Fragment() {
         }
     }
 
+    @SuppressLint("ScheduleExactAlarm")
     fun updateTaskStatus(viewModel: MainActivityViewModel, taskInfo: TaskInfo) {
         viewModel.updateTaskStatus(taskInfo)
         lifecycleScope.launch(Dispatchers.IO) {

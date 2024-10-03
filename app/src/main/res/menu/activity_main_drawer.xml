@@ -6,13 +6,20 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/base_fragment"
-            android:title="@string/menu_home"/>
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/calendar_fragment"
+            android:title="@string/calendar" />
         <item
             android:id="@+id/settings_fragment"
-            android:title="@string/settings"/>
+            android:title="@string/settings" />
         <item
             android:id="@+id/completed_tasks_fragment"
-            android:title="@string/completed_tasks"/>
+            android:title="@string/completed_tasks" />
+
+        <item
+            android:id="@+id/json_email_fragment"
+            android:title="@string/json_to_email" />
 
     </group>
 </menu>

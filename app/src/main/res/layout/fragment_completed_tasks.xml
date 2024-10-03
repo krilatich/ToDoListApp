@@ -22,9 +22,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/text"
-            android:layout_margin="10dp"
-            android:paddingBottom="15dp"
-            android:clipToPadding="false" />
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:clipToPadding="false"
+            android:paddingBottom="15dp" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/taskAnimationView"

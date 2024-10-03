@@ -80,7 +80,7 @@
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="@dimen/fab_margin"
             android:backgroundTint="@color/light_blue"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/fab_margin"
             app:srcCompat="@drawable/ic_baseline_add_24" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

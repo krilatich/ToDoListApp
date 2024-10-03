@@ -35,7 +35,7 @@
             app:view_color="@{taskCategoryInfo.categoryInfo[0].color}"/>
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/desciption"
+            android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -49,7 +49,7 @@
             android:id="@+id/dueDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/desciption"
+            android:layout_below="@id/description"
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="5dp"

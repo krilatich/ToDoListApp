@@ -24,17 +24,20 @@ import javax.inject.Named
 @AndroidEntryPoint
 class CompletedTasksFragment : ParentFragment() {
     private lateinit var viewModel: MainActivityViewModel
-    private lateinit var binding : FragmentCompletedTasksBinding
+    private lateinit var binding: FragmentCompletedTasksBinding
+
     @Inject
     @Named("completed_task_fragment")
-    lateinit var adapter : TasksAdapter
+    lateinit var adapter: TasksAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater,
-            R.layout.fragment_completed_tasks, container, false)
+        binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.fragment_completed_tasks, container, false
+        )
         return binding.root
 
     }
@@ -49,11 +52,11 @@ class CompletedTasksFragment : ParentFragment() {
             editTaskInformation(it)
         }
         initRecyclerView()
-        viewModel.getCompletedTask().observe(viewLifecycleOwner, Observer {
-            if(it.isEmpty()) binding.taskAnimationView.visibility = View.VISIBLE
+        viewModel.getCompletedTask().observe(viewLifecycleOwner) {
+            if (it.isEmpty()) binding.taskAnimationView.visibility = View.VISIBLE
             else binding.taskAnimationView.visibility = View.GONE
             adapter.differ.submitList(it)
-        })
+        }
     }
 
     private fun initRecyclerView() {
@@ -64,7 +67,10 @@ class CompletedTasksFragment : ParentFragment() {
     }
 
     private fun editTaskInformation(taskCategoryInfo: TaskCategoryInfo) {
-        val action = CompletedTasksFragmentDirections.actionCompletedTasksFragmentToNewTaskFragment(taskCategoryInfo)
+        val action = CompletedTasksFragmentDirections.actionCompletedTasksFragmentToNewTaskFragment(
+            newTaskArg = taskCategoryInfo,
+            calendarArg = null
+        )
         findNavController().navigate(action)
     }
 
@@ -85,9 +91,13 @@ class CompletedTasksFragment : ParentFragment() {
             val position = viewHolder.adapterPosition
             val taskInfo = adapter.differ.currentList[position]?.taskInfo
             val categoryInfo = adapter.differ.currentList[position]?.categoryInfo?.get(0)
-            if (taskInfo != null && categoryInfo!= null) {
+            if (taskInfo != null && categoryInfo != null) {
                 deleteTask(viewModel, taskInfo, categoryInfo)
-                Snackbar.make(binding.root,"Deleted Successfully",Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.task_deleted_message),
+                    Snackbar.LENGTH_LONG
+                )
                     .apply {
                         setAction("Undo") {
                             viewModel.insertTaskAndCategory(taskInfo, categoryInfo)

@@ -24,6 +24,11 @@ object SingletonAdapterModule {
 
     @Provides
     @Singleton
+    @Named("task_calendar_fragment")
+    fun provideTaskAdapterToCalendarTaskFragment() = TasksAdapter()
+
+    @Provides
+    @Singleton
     fun provideCategoryAdapter() = CategoryAdapter()
 
 }

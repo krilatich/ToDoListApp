@@ -43,4 +43,13 @@
         <item name="colorPrimary">@color/white</item>
     </style>
 
+    <style name="Calendar">
+        <item name="monthTitleColor">@color/black</item>
+        <item name="weekHeaderColor">@color/black</item>
+        <item name="eventDotColor">@color/dark_blue</item>
+        <item name="selectionColor">@color/light_blue</item>
+        <item name="primaryTextColor">@color/black</item>
+        <item name="secondaryTextColor">@color/grey</item>
+        <item name="selectedTextColor">@color/black</item>
+    </style>
 </resources>

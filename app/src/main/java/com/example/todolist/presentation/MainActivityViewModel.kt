@@ -16,7 +16,8 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class MainActivityViewModel @Inject constructor (private val repository: TaskCategoryRepository) : ViewModel() {
+class MainActivityViewModel @Inject constructor(private val repository: TaskCategoryRepository) :
+    ViewModel() {
 
     fun updateTaskStatus(task: TaskInfo) {
         viewModelScope.launch(IO) {
@@ -36,7 +37,7 @@ class MainActivityViewModel @Inject constructor (private val repository: TaskCat
         }
     }
 
-    fun updateTaskAndAddCategory(taskInfo: TaskInfo, categoryInfo: CategoryInfo){
+    fun updateTaskAndAddCategory(taskInfo: TaskInfo, categoryInfo: CategoryInfo) {
         viewModelScope.launch(IO) {
             repository.updateTaskAndAddCategory(taskInfo, categoryInfo)
         }
@@ -66,6 +67,10 @@ class MainActivityViewModel @Inject constructor (private val repository: TaskCat
         return repository.getCompletedTask()
     }
 
+    fun getAllTask(): LiveData<List<TaskCategoryInfo>> {
+        return repository.getAllTask()
+    }
+
     fun getUncompletedTaskOfCategory(category: String): LiveData<List<TaskCategoryInfo>> {
         return repository.getUncompletedTaskOfCategory(category)
     }
@@ -74,15 +79,15 @@ class MainActivityViewModel @Inject constructor (private val repository: TaskCat
         return repository.getCompletedTaskOfCategory(category)
     }
 
-    fun getNoOfTaskForEachCategory(): LiveData<List<NoOfTaskForEachCategory>>{
+    fun getNoOfTaskForEachCategory(): LiveData<List<NoOfTaskForEachCategory>> {
         return repository.getNoOfTaskForEachCategory()
     }
 
-    fun getCategories(): LiveData<List<CategoryInfo>>  {
+    fun getCategories(): LiveData<List<CategoryInfo>> {
         return repository.getCategories()
     }
 
-    suspend fun getCountOfCategory(category: String): Int{
+    suspend fun getCountOfCategory(category: String): Int {
         var count: Int
         coroutineScope() {
             count = withContext(IO) { repository.getCountOfCategory(category) }
@@ -90,7 +95,7 @@ class MainActivityViewModel @Inject constructor (private val repository: TaskCat
         return count
     }
 
-    fun getAlarms(currentTime : Date){
+    fun getAlarms(currentTime: Date) {
         CoroutineScope(Dispatchers.Main).launch {
             val list = repository.getActiveAlarms(currentTime)
             Log.d("DATA", list.toString())
